@@ -18,7 +18,7 @@ function Profile(props) {
                 <span>{props.user.bio}</span>
             </section>
             <hr/>
-            <section className={css.ProfileData}>
+            <section className={css.profileData}>
                 <ProfileData num={props.posts.length} label={'posts'}/>
                 <ProfileData num={props.followers.length} label={'followers'}/>
                 <ProfileData num={props.following.length} label={'following'}/>
