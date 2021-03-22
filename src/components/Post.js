@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+
+import css from './Post.module.css';
+import Url from 'utils/Url';
+import timespan from 'utils/timespan';
+
+import Response from './R';
+
+function Post(props) {
+    const [comment, setComment] = useState('');
+    const [toggleComment, setToggleComment] = useState(false);
+
+    function handleLike() {
+        props.onLike(props.post.id);
+    }
+
+    function handleSubmitComment(event) {
+        props.onComment(props.post.id, comment);
+        setComment('');
+        setToggleComment(false);
+        event.preventDefault();
+    }
+
+    function handleUnlike() {
+        props.onUnlike(props.post.id);
+    }
+
+    return (
+        <section className={css.post}>
+            <div className={css.postHeader}>
+                <img className={css.profilePhoto} src={Url(props.user.photo)} alt={props.user.id}/>
+                <span className={css.bold}>{props.user.id}</span>
+            </div>
+            <img className={css.postPhoto} src={Url(props.post.photo)} alt={props.post.desc}/>
+            <div>
+                <div>
+                    {props.likes.self ?
+                        <img className={css.postItem} src={Url('/assets/unlike.svg')} alt={'Unlike'} onClick={handleUnlike}/> :
+                        <img className={css.postItem} src={Url('/assets/like.svg')} alt={'Like'} onClick={handleLike}/>
+                    }
+                    <img className={`${css.postItem} ${css.commentButton}`} src={Url('/assets/comment.svg')} alt={'Comment'} onClick={e => setToggleComment(!toggleComment)}/> 
+                </div>
+                <span className={`${css.bold} ${css.postItem}`}>{props.likes.count} likes</span>
+            </div>
+            <div className={css.postItem}>
+                <Response username={props.user.id} text={props.post.desc}/>
+                {props.comments.map((c, i) => (
+                    <Response key={i} username={c.userId} text={c.text}/>
+                ))}
+            </div>
+            <span className={`${css.postItem} ${css.postTimestamp}`}>{timespan(props.post.datetime)}</span>
+            {toggleComment &&
+                <form className={css.addComment} onSubmit={handleSubmitComment}>
+                    <input type="text" placeholder="Add a comment…" value={comment} onChange={e => setComment(e.target.value)}/>
+                    <button type="submit">Post</button>
+                </form>
+            }
+        </section>
+    );
+}
+
+export default Post;
