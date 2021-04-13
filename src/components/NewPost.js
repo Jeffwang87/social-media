@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+
 import css from './NewPost.module.css';
 import FileLoader from './FileLoader';
+import { StoreContext } from 'contexts/StoreContext';
 
-function NewPost(props) {
+function NewPost() {
+    const {addPost} = useContext(StoreContext);
     const [dragging, setDragging] = useState(false);
     const [desc, setDesc] = useState('');
     const [photo, setPhoto] = useState(null);
@@ -12,7 +15,6 @@ function NewPost(props) {
 
     function handleFileDragEnter(e) {
         setDragging(true);
-        history.push('/');
     }
 
     function handleFileDragLeave(e) {
@@ -45,15 +47,14 @@ function NewPost(props) {
 
     function handleSubmit(e) {
         try {
-            props.addPost(photo, desc);
+            addPost(photo, desc);
             setError('');
+            history.push('/');
         } catch(err) {
             setError(err.message);
         }
         e.preventDefault();
     }
-
-
 
     return (
         <div>
